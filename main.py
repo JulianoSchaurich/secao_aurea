@@ -1,7 +1,19 @@
 import math
 import tkinter as tk
-from tkinter import ttk
-from ttkthemes import ThemedStyle
+
+# Valores para teste
+a1 = 1
+a2 = -3
+a3 = 2
+a4 = -1
+a5 = 4
+a6 = -2
+
+# Extremos do intervalo e a tolerância
+a = -2
+b = 2
+tol = 0.0001
+
 # Definindo a função polinomial de grau 5
 def polynomial(x, a1, a2, a3, a4, a5, a6):
     return a1 * x**5 + a2 * x**4 + a3 * x**3 + a4 * x**2 + a5 * x + a6
@@ -24,7 +36,9 @@ def golden_section_search(f, a, b, tol, a1, a2, a3, a4, a5, a6):
     return (b + a) / 2
 
 # Função para obter os valores da interface gráfica e executar o algoritmo
-def find_minimum():
+def find_minimum(entry_a1, entry_a2, entry_a3, entry_a4, entry_a5, entry_a6, entry_a, entry_b, entry_tol, result_label):
+    result_label.config(text="Calculando o mínimo...")
+
     a1 = float(entry_a1.get())
     a2 = float(entry_a2.get())
     a3 = float(entry_a3.get())
@@ -40,57 +54,50 @@ def find_minimum():
     
     result_label.config(text=f"O mínimo da função ocorre em x = {min_x:.4f} com valor f(x) = {min_f:.4f}")
 
-# Criando a interface gráfica com Tkinter
-root = tk.Tk()
-root.title("Minimização com Seção Áurea")
+# Função para criar a interface gráfica com Tkinter
+def create_gui():
+    root = tk.Tk()
+    root.title("Minimização com Seção Áurea")
 
-# Adicionando campos para entrada dos coeficientes do polinômio
-tk.Label(root, text="Coeficientes do polinômio").grid(row=0, columnspan=2)
-tk.Label(root, text="a1:").grid(row=1, column=0)
-entry_a1 = tk.Entry(root)
-entry_a1.grid(row=1, column=1)
+    # Adicionando campos para entrada dos coeficientes do polinômio
+    tk.Label(root, text="Coeficientes do polinômio").grid(row=0, columnspan=2, sticky=tk.W)
+    entries = {}
+    for i in range(1, 7):
+        tk.Label(root, text=f"a{i}:").grid(row=i, column=0, sticky=tk.W)
+        entries[f'entry_a{i}'] = tk.Entry(root)
+        entries[f'entry_a{i}'].grid(row=i, column=1, sticky=tk.W)
+        # Definindo os valores de teste como placeholders
+        entries[f'entry_a{i}'].insert(0, f"{eval('a' + str(i))}")
 
-tk.Label(root, text="a2:").grid(row=2, column=0)
-entry_a2 = tk.Entry(root)
-entry_a2.grid(row=2, column=1)
+    # Adicionando campos para entrada dos extremos do intervalo e a tolerância
+    tk.Label(root, text="Extremos do intervalo e tolerância").grid(row=7, columnspan=2, sticky=tk.W)
+    tk.Label(root, text="a:").grid(row=8, column=0, sticky=tk.W)
+    entries['entry_a'] = tk.Entry(root)
+    entries['entry_a'].grid(row=8, column=1, sticky=tk.W)
+    entries['entry_a'].insert(0, a)
 
-tk.Label(root, text="a3:").grid(row=3, column=0)
-entry_a3 = tk.Entry(root)
-entry_a3.grid(row=3, column=1)
+    tk.Label(root, text="b:").grid(row=9, column=0, sticky=tk.W)
+    entries['entry_b'] = tk.Entry(root)
+    entries['entry_b'].grid(row=9, column=1, sticky=tk.W)
+    entries['entry_b'].insert(0, b)
 
-tk.Label(root, text="a4:").grid(row=4, column=0)
-entry_a4 = tk.Entry(root)
-entry_a4.grid(row=4, column=1)
+    tk.Label(root, text="Tolerância (EPSILON):").grid(row=10, column=0, sticky=tk.W)
+    entries['entry_tol'] = tk.Entry(root)
+    entries['entry_tol'].grid(row=10, column=1, sticky=tk.W)
+    entries['entry_tol'].insert(0, tol)
 
-tk.Label(root, text="a5:").grid(row=5, column=0)
-entry_a5 = tk.Entry(root)
-entry_a5.grid(row=5, column=1)
+    # Botão para executar o algoritmo e mostrar o resultado
+    tk.Button(root, text="Encontrar Mínimo", command=lambda: find_minimum(**entries, result_label=result_label)).grid(row=11, columnspan=2, sticky=tk.W)
 
-tk.Label(root, text="a6:").grid(row=6, column=0)
-entry_a6 = tk.Entry(root)
-entry_a6.grid(row=6, column=1)
+    # Label para mostrar o resultado
+    result_label = tk.Label(root, text="")
+    result_label.grid(row=12, columnspan=2, sticky=tk.W)
 
-# Adicionando campos para entrada dos extremos do intervalo e a tolerância
-tk.Label(root, text="Extremos do intervalo e tolerância").grid(row=7, columnspan=2)
-tk.Label(root, text="a:").grid(row=8, column=0)
-entry_a = tk.Entry(root)
-entry_a.grid(row=8, column=1)
+    root.mainloop()
 
-tk.Label(root, text="b:").grid(row=9, column=0)
-entry_b = tk.Entry(root)
-entry_b.grid(row=9, column=1)
+# Função principal para execução da interface gráfica
+def main():
+    create_gui()
 
-tk.Label(root, text="Tolerância (EPSILON):").grid(row=10, column=0)
-entry_tol = tk.Entry(root)
-entry_tol.grid(row=10, column=1)
-
-# Botão para executar o algoritmo e mostrar o resultado
-tk.Button(root, text="Encontrar Mínimo", command=find_minimum).grid(row=11, columnspan=2)
-
-# Label para mostrar o resultado
-result_label = tk.Label(root, text="")
-result_label.grid(row=12, columnspan=2)
-
-
-
-root.mainloop()
+if __name__ == "__main__":
+    main()
